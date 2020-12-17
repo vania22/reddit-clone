@@ -3,12 +3,16 @@ import { createConnection } from 'typeorm';
 import express from 'express';
 import morgan from 'morgan';
 
+// Importing routers
+import authRouter from './routes/auth';
+
 const app = express();
 
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.get('/', (req, res) => res.send('hello'));
+// Using routers
+app.use('/api/auth', authRouter);
 
 app.listen(5000, async () => {
     console.log('Server started at port 5000');
