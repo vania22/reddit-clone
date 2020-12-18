@@ -1,5 +1,5 @@
 import { validate } from 'class-validator';
-import { Request, Response, Router } from 'express';
+import e, { Request, Response, Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
@@ -12,12 +12,28 @@ const register = async (req: Request, res: Response) => {
     email = email.toLowerCase();
 
     try {
+        // Create user
+        const user = new User({ username, email, password });
+
+        // Validate user data
+        const errors = await validate(user);
+        let mappedErrors = {};
+        if (errors.length > 0) {
+            errors.forEach((element) => {
+                const fieldName = element.property;
+                const value = Object.entries(element.constraints)[0][1];
+                mappedErrors[fieldName] = value;
+            });
+
+            return res.status(400).json(mappedErrors);
+        }
+
         // Validate if email isn't in use
         const emailExists = await User.findOne({ email });
         if (emailExists) {
             return res
                 .status(400)
-                .json({ message: 'User with given email already exists' });
+                .json({ email: 'User with given email already exists' });
         }
 
         // Validate if username isn't in use
@@ -25,15 +41,8 @@ const register = async (req: Request, res: Response) => {
         if (usernameExists) {
             return res
                 .status(400)
-                .json({ message: 'User with given username already exists' });
+                .json({ username: 'User with given username already exists' });
         }
-
-        // Create user
-        const user = new User({ username, email, password });
-
-        // Validate user data
-        const errors = await validate(user);
-        if (errors.length > 0) return res.status(400).json(errors);
 
         // Save user
         await user.save();
