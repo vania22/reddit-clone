@@ -1,18 +1,19 @@
 import classNames from 'classnames';
-import { ChangeEvent } from 'react';
 
 interface InputGroupInterface {
     value: string;
-    onChange: (str: string) => void
-    error: string | undefined;
+    onChange: (str: string) => void;
+    error?: string | undefined;
     placeholder?: string;
     type?: string;
+    className?: string;
 }
 
 const InputGroup: React.FC<InputGroupInterface> = ({
     value,
     onChange,
     error,
+    className,
     placeholder = '',
     type = 'text',
 }): React.ReactElement => {
@@ -21,7 +22,7 @@ const InputGroup: React.FC<InputGroupInterface> = ({
             <input
                 className={classNames(
                     'w-full p-3 transition duration-200 border-2 border-gray-300 rounded outline-none bg-gray-50 focus:bg-white hover:bg-white',
-                    { 'border-red-500': error },
+                    { 'border-red-500': error }, className
                 )}
                 placeholder={placeholder}
                 type={type}
