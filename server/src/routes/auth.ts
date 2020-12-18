@@ -90,7 +90,7 @@ const me = async (req: Request, res: Response) => {
 const logout = (req: Request, res: Response) => {
     res.set(
         'Set-Cookie',
-        cookie.serialize('token', null, {
+        cookie.serialize('token', '', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',

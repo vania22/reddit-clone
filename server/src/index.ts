@@ -12,6 +12,7 @@ dotenv.config();
 import authRouter from './routes/auth';
 import postRouter from './routes/posts';
 import subRouter from './routes/subs';
+import commentRouter from './routes/comments';
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(trimBody);
 // Using routers
 app.use('/api/auth', authRouter);
 app.use('/api/post', postRouter);
+app.use('/api/post', commentRouter);
 app.use('/api/sub', subRouter);
 
 app.listen(process.env.PORT, async () => {

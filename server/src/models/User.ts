@@ -1,7 +1,13 @@
 import { IsEmail, MinLength } from 'class-validator';
 import bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
-import { Entity as TOEntity, Column, Index, BeforeInsert, OneToMany } from 'typeorm';
+import {
+    Entity as TOEntity,
+    Column,
+    Index,
+    BeforeInsert,
+    OneToMany,
+} from 'typeorm';
 
 import Entity from './Entity';
 import Post from './Post';
@@ -10,7 +16,6 @@ import Post from './Post';
 export default class User extends Entity {
     constructor(user: Partial<User>) {
         super();
-
         Object.assign(this, user);
     }
 
@@ -29,7 +34,7 @@ export default class User extends Entity {
     @Column()
     password: string;
 
-    @OneToMany(() => Post, post => post.user)
+    @OneToMany(() => Post, (post) => post.user)
     posts: Post[];
 
     @BeforeInsert()
