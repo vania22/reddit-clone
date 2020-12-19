@@ -30,7 +30,7 @@ export default function Login() {
     };
 
     return (
-        <div className="flex">
+        <div className="flex bg-white">
             <Head>
                 <title>Reddit | Login</title>
             </Head>
@@ -75,7 +75,7 @@ export default function Login() {
                     </form>
                     <small>
                         New to Reddit?
-                        <Link href="/">
+                        <Link href="/register">
                             <a className="ml-1 text-blue-500 uppercase outline-none">
                                 Sign Up
                             </a>
