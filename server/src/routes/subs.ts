@@ -3,6 +3,7 @@ import { getRepository } from 'typeorm';
 import Sub from '../models/Sub';
 import User from '../models/User';
 import auth from '../middlewares/auth';
+import user from '../middlewares/user';
 
 const createSub = async (req: Request, res: Response) => {
     const { name, title, description } = req.body;
@@ -45,6 +46,6 @@ const createSub = async (req: Request, res: Response) => {
 const router = Router();
 
 // Routes
-router.post('/', auth, createSub);
+router.post('/', user, auth, createSub);
 
 export default router;

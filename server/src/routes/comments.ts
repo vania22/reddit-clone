@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express';
 import auth from '../middlewares/auth';
+import user from '../middlewares/user';
 import Comment from '../models/Comment';
 import Post from '../models/Post';
 import User from '../models/User';
@@ -32,6 +33,6 @@ const commentOnPost = async (req: Request, res: Response) => {
 
 const router = Router();
 
-router.post('/comment/:identifier/:slug', auth, commentOnPost);
+router.post('/comment/:identifier/:slug', user, auth, commentOnPost);
 
 export default router;

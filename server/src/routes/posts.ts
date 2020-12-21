@@ -3,6 +3,7 @@ import Post from '../models/Post';
 import User from '../models/User';
 import Sub from '../models/Sub';
 import auth from '../middlewares/auth';
+import user from '../middlewares/user';
 
 const createPost = async (req: Request, res: Response) => {
     const { title, body, sub } = req.body;
@@ -39,8 +40,12 @@ const getPosts = async (req: Request, res: Response) => {
     try {
         const posts = await Post.find({
             order: { createdAt: 'DESC' },
-            relations: ['user'],
+            relations: ['user', 'comments', 'votes'],
         });
+
+        if (res.locals.user) {
+            posts.forEach((p) => p.setUserVote(res.locals.user));
+        }
 
         return res.json(posts);
     } catch (error) {
@@ -56,11 +61,15 @@ const getPost = async (req: Request, res: Response) => {
     try {
         const post = await Post.findOne(
             { identifier, slug },
-            { relations: ['sub', 'comments'] },
+            { relations: ['sub', 'comments', 'votes'] },
         );
 
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
+        }
+
+        if (res.locals.user) {
+            post.setUserVote(res.locals.user);
         }
 
         return res.json(post);
@@ -74,8 +83,8 @@ const getPost = async (req: Request, res: Response) => {
 const router = Router();
 
 // Routes
-router.post('/', auth, createPost);
-router.get('/', getPosts);
-router.get('/:identifier/:slug', getPost);
+router.post('/', user, auth, createPost);
+router.get('/', user, getPosts);
+router.get('/:identifier/:slug', user, getPost);
 
 export default router;

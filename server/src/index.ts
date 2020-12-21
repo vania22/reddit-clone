@@ -14,6 +14,7 @@ import authRouter from './routes/auth';
 import postRouter from './routes/posts';
 import subRouter from './routes/subs';
 import commentRouter from './routes/comments';
+import voteRouter from './routes/votes';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/post', postRouter);
 app.use('/api/post', commentRouter);
 app.use('/api/sub', subRouter);
+app.use('/api/vote', voteRouter);
 
 app.listen(process.env.PORT, async () => {
     console.log(`Server started at port ${process.env.PORT}`);

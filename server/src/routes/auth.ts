@@ -6,6 +6,7 @@ import cookie from 'cookie';
 
 import User from '../models/User';
 import auth from '../middlewares/auth';
+import user from '../middlewares/user';
 
 const register = async (req: Request, res: Response) => {
     let { email, username, password } = req.body;
@@ -120,7 +121,7 @@ const router = Router();
 
 router.post('/register', register);
 router.post('/login', login);
-router.get('/me', auth, me);
-router.get('/logout', auth, logout);
+router.get('/me',user, auth, me);
+router.get('/logout',user, auth, logout);
 
 export default router;
