@@ -3,6 +3,9 @@ import Axios from 'axios';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
 import { IPost } from '../types';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 const ActionButton: React.FC = ({ children }): React.ReactElement => (
     <a className="px-1 py-1 mr-1 text-xs font-medium text-center text-gray-400 rounded cursor-pointer hover:bg-gray-100">
@@ -18,8 +21,6 @@ const Card: React.FC<{ post: IPost }> = ({ post }): React.ReactElement => {
                 slug: post.slug,
                 value,
             });
-
-            console.log(data);
         } catch (error) {
             console.log(error);
         }
@@ -53,15 +54,15 @@ const Card: React.FC<{ post: IPost }> = ({ post }): React.ReactElement => {
             <div className="w-full p-2">
                 <div className="flex items-center">
                     <Link href={`/r/${post.subName}`}>
-                        <>
-                            <img
-                                src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
-                                className="w-6 h-6 mr-1 rounded-full cursor-pointer"
-                            />
-                            <a className="text-xs font-bold cursor-pointer hover:underline">
-                                /r/{post.subName}
-                            </a>
-                        </>
+                        <img
+                            src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+                            className="w-6 h-6 mr-1 rounded-full cursor-pointer"
+                        />
+                    </Link>
+                    <Link href={`/r/${post.subName}`}>
+                        <a className="text-xs font-bold cursor-pointer hover:underline">
+                            /r/{post.subName}
+                        </a>
                     </Link>
                     <p className="text-xs text-gray-500">
                         <span className="mx-1">•</span>
@@ -79,7 +80,9 @@ const Card: React.FC<{ post: IPost }> = ({ post }): React.ReactElement => {
                     </p>
                 </div>
                 <Link href={post.url}>
-                    <p className="my-1 text-lg font-medium">{post.title}</p>
+                    <a>
+                        <p className="my-1 text-lg font-medium">{post.title}</p>
+                    </a>
                 </Link>
                 {post.body && <p className="my-1 text-sm">{post.body}</p>}
                 <div className="flex items-start mt-2">
