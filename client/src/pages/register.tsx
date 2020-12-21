@@ -1,9 +1,11 @@
+import { FormEvent, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import Axios from 'axios';
+
 import InputGroup from '../components/InputGroup';
+import { useAuthState } from '../context/auth';
 
 export default function Register() {
     const [username, setUsername] = useState('');
@@ -16,6 +18,7 @@ export default function Register() {
         password?: string;
     }>({});
 
+    const { authenticated } = useAuthState();
     const router = useRouter();
 
     const onSubmit = async (e: FormEvent) => {
@@ -33,6 +36,8 @@ export default function Register() {
             setErrors(error.response.data);
         }
     };
+
+    if (authenticated) router.push('/');
 
     return (
         <div className="flex bg-white">

@@ -1,33 +1,41 @@
+import { FormEvent, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import Axios from 'axios';
+
 import InputGroup from '../components/InputGroup';
+import { useAuthDispatch, useAuthState } from '../context/auth';
 
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
+    const authDispatch = useAuthDispatch();
+    const { authenticated } = useAuthState();
     const router = useRouter();
 
     const onSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         try {
-            const { data: user } = await Axios.post('/auth/login', {
+            const {
+                data: { user },
+            } = await Axios.post('/auth/login', {
                 username,
                 password,
             });
 
-            console.log(user);
+            authDispatch({ type: 'LOGIN', payload: user });
 
             router.push('/');
         } catch (error) {
             setError(error.response.data.error);
         }
     };
+
+    if (authenticated) router.push('/');
 
     return (
         <div className="flex bg-white">
@@ -36,7 +44,9 @@ export default function Login() {
             </Head>
             <div
                 className="h-screen bg-center bg-cover w-36"
-                style={{ backgroundImage: "url('/images/register-bckg.jpg')" }}
+                style={{
+                    backgroundImage: "url('/images/register-bckg.jpg')",
+                }}
             />
             <div className="flex flex-col justify-center pl-6">
                 <div className="max-w-6xl w-72">

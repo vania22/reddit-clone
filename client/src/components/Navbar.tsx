@@ -1,7 +1,23 @@
+import Axios from 'axios';
 import Link from 'next/link';
+
+import { useAuthDispatch, useAuthState } from '../context/auth';
 import Logo from '../images/logo.svg';
 
 const Navbar: React.FC = (): React.ReactElement => {
+    const { authenticated } = useAuthState();
+    const authDispatch = useAuthDispatch();
+
+    const logout = async () => {
+        try {
+            await Axios.get('/auth/logout');
+            authDispatch({ type: 'LOGOUT' });
+            window.location.reload();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-center h-12 px-5 bg-white">
             <div className="flex items-center">
@@ -25,12 +41,25 @@ const Navbar: React.FC = (): React.ReactElement => {
                 />
             </div>
             <div className="flex items-center justify-center">
-                <Link href="/login">
-                    <a className="w-32 py-1 mr-4 hollow blue button">log in</a>
-                </Link>
-                <Link href="/register">
-                    <a className="w-32 py-1 blue button">register</a>
-                </Link>
+                {authenticated ? (
+                    <a
+                        onClick={logout}
+                        className="w-32 py-1 mr-4 hollow blue button"
+                    >
+                        log out
+                    </a>
+                ) : (
+                    <>
+                        <Link href="/login">
+                            <a className="w-32 py-1 mr-4 hollow blue button">
+                                log in
+                            </a>
+                        </Link>
+                        <Link href="/register">
+                            <a className="w-32 py-1 blue button">register</a>
+                        </Link>
+                    </>
+                )}
             </div>
         </div>
     );

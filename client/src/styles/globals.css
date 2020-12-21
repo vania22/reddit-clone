@@ -4,7 +4,7 @@
 
 @layer components {
     .button {
-        @apply inline-block text-xs font-bold text-center uppercase border rounded;
+        @apply inline-block text-xs font-bold text-center uppercase border rounded cursor-pointer;
     }
 
     .button.blue {
@@ -16,7 +16,7 @@
     }
 
     .button.blue.hollow:hover {
-        @apply text-white bg-blue-300 border-blue-300;
+        @apply text-white bg-blue-500 border-blue-500;
     }
 
     .button.blue:hover {
