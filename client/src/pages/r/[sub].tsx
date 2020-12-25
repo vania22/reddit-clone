@@ -6,7 +6,8 @@ import Card from '../../components/Card';
 
 export default function Home() {
     const router = useRouter();
-    const { data: sub } = useSWR(`/sub/${router.query.sub}`);
+    const { data: sub, error } = useSWR(`/sub/${router.query.sub}`);
+    if (error) router.push('/');
 
     return (
         <div>

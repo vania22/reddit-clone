@@ -1,5 +1,9 @@
 import { Request, Response, Router } from 'express';
 import { getRepository } from 'typeorm';
+import multer, { FileFilterCallback } from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { makeid } from './../util/helpers';
 import Sub from '../models/Sub';
 import User from '../models/User';
 import auth from '../middlewares/auth';
@@ -68,10 +72,81 @@ const getSub = async (req: Request, res: Response) => {
     }
 };
 
+const ownSub = async (req: Request, res: Response, next: NewableFunction) => {
+    const user: User = res.locals.user;
+
+    const sub: Sub = await Sub.findOne({ name: req.params.name, user });
+
+    if (!sub) {
+        return res
+            .status(403)
+            .json({ message: 'You are not the owner of the sub' });
+    }
+
+    res.locals.sub = sub;
+    next();
+};
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: 'public/images',
+        filename: (req, file, callback) => {
+            const name = makeid(15);
+            callback(null, name + path.extname(file.originalname));
+        },
+    }),
+    fileFilter: (req, file, callback: FileFilterCallback) => {
+        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpeg') {
+            callback(null, true);
+        } else {
+            callback(new Error('Not an image'));
+        }
+    },
+});
+
+const uploadSubImage = async (req: Request, res: Response) => {
+    const sub: Sub = res.locals.sub;
+
+    try {
+        const type = req.body.type;
+
+        if (type !== 'image' && type !== 'banner') {
+            fs.unlinkSync(req.file.path);
+            return res.status(400).json({ message: 'Invalid type' });
+        }
+
+        let oldImageUrn;
+        if (type === 'image') {
+            oldImageUrn = sub.imageUrn || '';
+            sub.imageUrn = req.file.filename;
+        } else {
+            oldImageUrn = sub.bannerUrn || '';
+            sub.bannerUrn = req.file.filename;
+        }
+
+        if (oldImageUrn) {
+            fs.unlinkSync(`public\\images\\${oldImageUrn}`);
+        }
+        await sub.save();
+
+        return res.json(sub);
+    } catch (error) {
+        return res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+
 const router = Router();
 
 // Routes
 router.post('/', user, auth, createSub);
 router.get('/:name', user, getSub);
+router.post(
+    '/:name/image',
+    user,
+    auth,
+    ownSub,
+    upload.single('file'),
+    uploadSubImage,
+);
 
 export default router;
