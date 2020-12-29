@@ -6,7 +6,7 @@ import { SWRConfig } from 'swr';
 import Navbar from '../components/Navbar';
 import { AuthProvider } from '../context/auth';
 
-import '../styles/globals.css';
+import '../styles/globals.scss';
 
 Axios.defaults.baseURL = 'http://localhost:5000/api';
 Axios.defaults.withCredentials = true;

@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { getRepository } from 'typeorm';
+import { getRepository, getConnection } from 'typeorm';
 import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -52,7 +52,7 @@ const getSub = async (req: Request, res: Response) => {
     const name = req.params.name;
 
     try {
-        const sub = await Sub.findOneOrFail({ name });
+        const sub = await Sub.findOneOrFail({ name }, { relations: ['user'] });
         const posts = await Post.find({
             where: { sub },
             order: { createdAt: 'DESC' },
@@ -66,6 +66,29 @@ const getSub = async (req: Request, res: Response) => {
         sub.posts = posts;
 
         return res.json(sub);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+
+const getTopSubs = async (req: Request, res: Response) => {
+    const imageUrlExp = `COALESCE('${process.env.APP_URL}/images/' || s."imageUrn", 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y')`;
+
+    try {
+        const subs: Sub[] = await getConnection()
+            .createQueryBuilder()
+            .select(
+                `s.title, s.name, ${imageUrlExp} as "imageUrl", count(p.id) as "postCount"`,
+            )
+            .from(Sub, 's')
+            .leftJoin(Post, 'p', 's.name = p."subName"')
+            .groupBy('s.title, s.name, "imageUrl"')
+            .orderBy(`"postCount"`, 'DESC')
+            .limit(5)
+            .execute();
+
+        return res.json(subs);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Something went wrong' });
@@ -96,7 +119,11 @@ const upload = multer({
         },
     }),
     fileFilter: (req, file, callback: FileFilterCallback) => {
-        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpeg') {
+        if (
+            file.mimetype === 'image/jpeg' ||
+            file.mimetype === 'image/jpeg' ||
+            file.mimetype === 'image/png'
+        ) {
             callback(null, true);
         } else {
             callback(new Error('Not an image'));
@@ -139,7 +166,8 @@ const router = Router();
 
 // Routes
 router.post('/', user, auth, createSub);
-router.get('/:name', user, getSub);
+router.get('/sub/:name', user, getSub);
+router.get('/top-subs', user, getTopSubs);
 router.post(
     '/:name/image',
     user,

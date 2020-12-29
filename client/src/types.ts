@@ -19,3 +19,16 @@ export interface IUser {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface ISub {
+    name: string;
+    title?: string;
+    description?: string;
+    posts: IPost[];
+    imageUrl: string;
+    bannerUrl?: string;
+    createdAt: string;
+    updatedAt: string;
+    user: IUser;
+    postCount?: string;
+}

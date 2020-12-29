@@ -1,10 +1,15 @@
 import Head from 'next/head';
+import Image from 'next/image';
+import Link from 'next/link';
 import useSWR from 'swr';
 
 import Card from '../components/Card';
+import SubBadge from '../components/SubBadge';
+import { IPost, ISub } from '../types';
 
 export default function Home() {
     const { data: posts } = useSWR('/post');
+    const { data: subs } = useSWR('/sub/top-subs');
 
     return (
         <div>
@@ -16,12 +21,22 @@ export default function Home() {
                 <div className="flex">
                     <div className="w-full lg:w-3/5">
                         {posts &&
-                            posts.map((post) => (
+                            posts.map((post: IPost) => (
                                 <Card post={post} key={post.identifier} />
                             ))}
                     </div>
-                    <div className="hidden w-2/5 bg-green-600 lg:block">
-                        hello
+                    <div className="hidden w-2/5 ml-6 lg:block">
+                        <div className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
+                            <h1 className="p-3 text-xl text-white ">
+                                New communities to keep you informed
+                            </h1>
+                            <div className="flex flex-col bg-white">
+                                {subs &&
+                                    subs.map((sub: ISub) => (
+                                        <SubBadge sub={sub} key={sub.name} />
+                                    ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
