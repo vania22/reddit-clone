@@ -13,7 +13,10 @@ const ActionButton: React.FC = ({ children }): React.ReactElement => (
     </a>
 );
 
-const Card: React.FC<{ post: IPost }> = ({ post }): React.ReactElement => {
+const Card: React.FC<{ post: IPost; revalidate: any }> = ({
+    post,
+    revalidate,
+}): React.ReactElement => {
     const vote = async (value: number) => {
         try {
             const { data } = await Axios.post('/vote', {
@@ -21,6 +24,7 @@ const Card: React.FC<{ post: IPost }> = ({ post }): React.ReactElement => {
                 slug: post.slug,
                 value,
             });
+            revalidate();
         } catch (error) {
             console.log(error);
         }

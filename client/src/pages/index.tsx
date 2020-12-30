@@ -11,7 +11,7 @@ import { useAuthState } from '../context/auth';
 import { IPost, ISub } from '../types';
 
 export default function Home() {
-    const { data: posts } = useSWR('/post');
+    const { data: posts, revalidate } = useSWR('/post');
     const { data: subs } = useSWR('/sub/top-subs');
     const { authenticated } = useAuthState();
 
@@ -22,13 +22,22 @@ export default function Home() {
             </Head>
             <div className="container flex-col w-full pt-12 mx-auto lg:w-10/12">
                 {/* Create post form */}
-                {authenticated && <CreatePostForm initialSubs={subs} />}
+                {authenticated && (
+                    <CreatePostForm
+                        initialSubs={subs}
+                        revalidate={revalidate}
+                    />
+                )}
                 <h1 className="my-4 text-xl font-medium">Recent posts</h1>
                 <div className="flex justify-center">
                     <div className="w-full lg:w-3/5">
                         {posts &&
                             posts.map((post: IPost) => (
-                                <Card post={post} key={post.identifier} />
+                                <Card
+                                    post={post}
+                                    key={post.identifier}
+                                    revalidate={revalidate}
+                                />
                             ))}
                     </div>
                     <Sidebar>

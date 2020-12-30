@@ -5,9 +5,10 @@ import { ISub } from '../types';
 
 interface Props {
     initialSubs: ISub[];
+    revalidate: any;
 }
 
-const CreatePostForm: React.FC<Props> = ({ initialSubs }) => {
+const CreatePostForm: React.FC<Props> = ({ initialSubs, revalidate }) => {
     const router = useRouter();
     const [dataList, setDataList] = useState<ISub[]>([]);
     const [formValues, setFormValues] = useState({
@@ -41,6 +42,7 @@ const CreatePostForm: React.FC<Props> = ({ initialSubs }) => {
                 title: formValues.title,
                 body: formValues.body,
             });
+            revalidate();
             router.push(`/r/${formValues.subName}`);
         } catch (error) {
             console.log(error);
