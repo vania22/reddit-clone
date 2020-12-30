@@ -110,6 +110,23 @@ const ownSub = async (req: Request, res: Response, next: NewableFunction) => {
     next();
 };
 
+const findSub = async (req: Request, res: Response) => {
+    const searchTerm = req.params.searchTerm;
+
+    try {
+        const subs = await getRepository(Sub)
+            .createQueryBuilder('sub')
+            .where('LOWER(sub.name) like LOWER(:name)', {
+                name: `%${searchTerm}%`,
+            })
+            .getMany();
+
+        return res.json(subs);
+    } catch (error) {
+        return res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+
 const upload = multer({
     storage: multer.diskStorage({
         destination: 'public/images',
@@ -176,5 +193,6 @@ router.post(
     upload.single('file'),
     uploadSubImage,
 );
+router.get('/find/:searchTerm', user, findSub);
 
 export default router;
