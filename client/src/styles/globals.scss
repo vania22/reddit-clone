@@ -7,6 +7,10 @@
         @apply inline-block text-xs font-bold text-center uppercase border rounded cursor-pointer outline-none;
     }
 
+    .button:disabled {
+        @apply opacity-80 cursor-not-allowed;
+    }
+
     .button.blue {
         @apply text-white bg-blue-500 border-blue-500;
     }

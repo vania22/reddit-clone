@@ -1,13 +1,5 @@
 import { Exclude } from 'class-transformer';
-import {
-    Entity as TOEntity,
-    Column,
-    Index,
-    BeforeInsert,
-    OneToMany,
-    ManyToOne,
-    JoinColumn,
-} from 'typeorm';
+import { Entity as TOEntity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import Comment from './Comment';
 
 import Entity from './Entity';

@@ -3,14 +3,26 @@ export interface IPost {
     title: string;
     slug: string;
     subName: string;
+    sub?: ISub;
     user: IUser;
     url: string;
     body?: string;
     createdAt: string;
     updatedAt: string;
     commentsCount: number;
+    comments?: IComment[];
     voteScore: number;
     userVote?: number;
+}
+
+export interface IComment {
+    body: string;
+    identifier: string;
+    username: string;
+    createdAt: string;
+    updatedAt: string;
+    userVote?: number;
+    voteScore: number;
 }
 
 export interface IUser {

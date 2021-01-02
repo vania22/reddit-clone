@@ -2,6 +2,7 @@ import Axios from 'axios';
 import { useState, useEffect, ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
 import { ISub } from '../types';
+import InputGroup from './InputGroup';
 
 interface Props {
     initialSubs: ISub[];
@@ -21,6 +22,12 @@ const CreatePostForm: React.FC<Props> = ({ initialSubs, revalidate }) => {
     useEffect(() => {
         setDataList(initialSubs);
     }, []);
+
+    const onPostTitleChange = (value: string) =>
+        setFormValues({ ...formValues, title: value });
+
+    const onPostBodyChange = (value: string) =>
+        setFormValues({ ...formValues, body: value });
 
     const onSelectChange = async (e: ChangeEvent<HTMLInputElement>) => {
         setFormValues({ ...formValues, subName: `${e.target.value}` });
@@ -52,7 +59,10 @@ const CreatePostForm: React.FC<Props> = ({ initialSubs, revalidate }) => {
     return (
         <div className="w-full px-6 py-4 mt-4 bg-gray-400 rounded">
             <h1 className="my-4 text-xl font-medium">Create Post</h1>
-            <form className="flex flex-col w-full h-72" onSubmit={onPostCreate}>
+            <form
+                className="flex flex-col max-w-sm h-72"
+                onSubmit={onPostCreate}
+            >
                 <input
                     type="text"
                     name="sub"
@@ -60,7 +70,7 @@ const CreatePostForm: React.FC<Props> = ({ initialSubs, revalidate }) => {
                     placeholder="Choose a community"
                     value={formValues.subName}
                     onChange={onSelectChange}
-                    className="max-w-sm p-2 mb-10 text-white bg-gray-700 rounded outline-none"
+                    className="p-2 mb-10 text-white bg-gray-700 rounded outline-none"
                 />
                 <datalist id="subs">
                     {dataList &&
@@ -70,21 +80,18 @@ const CreatePostForm: React.FC<Props> = ({ initialSubs, revalidate }) => {
                             </option>
                         ))}
                 </datalist>
-                <input
+                <InputGroup
+                    onChange={onPostTitleChange}
                     value={formValues.title}
-                    onChange={(e) =>
-                        setFormValues({ ...formValues, title: e.target.value })
-                    }
-                    className="max-w-sm p-2 mb-10 text-white bg-gray-700 rounded outline-none"
                     placeholder="Post title"
+                    className="p-2 py-2 mb-8 text-white bg-gray-700 border-none rounded outline-none hover:bg-gray-700 focus:bg-gray-700"
                 />
-                <textarea
+                <InputGroup
+                    onChange={onPostBodyChange}
                     value={formValues.body}
-                    onChange={(e) =>
-                        setFormValues({ ...formValues, body: e.target.value })
-                    }
-                    className="max-w-sm p-2 mb-10 text-white bg-gray-700 rounded outline-none"
                     placeholder="Post body"
+                    textarea
+                    className="p-2 py-2 mb-4 text-white bg-gray-700 border-none rounded outline-none hover:bg-gray-700 focus:bg-gray-700"
                 />
                 <button className="py-2 w-36 button blue " type="submit">
                     Create

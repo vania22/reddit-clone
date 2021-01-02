@@ -1,11 +1,9 @@
 import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
 import useSWR from 'swr';
 
-import Card from '../components/Card';
+import PostCard from '../components/PostCard';
 import CreatePostForm from '../components/CreatePostForm';
-import Sidebar from '../components/Sidebar';
+import { Sidebar } from '../components/Sidebar';
 import SubBadge from '../components/SubBadge';
 import { useAuthState } from '../context/auth';
 import { IPost, ISub } from '../types';
@@ -33,7 +31,7 @@ export default function Home() {
                     <div className="w-full lg:w-3/5">
                         {posts &&
                             posts.map((post: IPost) => (
-                                <Card
+                                <PostCard
                                     post={post}
                                     key={post.identifier}
                                     revalidate={revalidate}

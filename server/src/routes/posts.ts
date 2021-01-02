@@ -61,7 +61,15 @@ const getPost = async (req: Request, res: Response) => {
     try {
         const post = await Post.findOne(
             { identifier, slug },
-            { relations: ['sub', 'comments', 'votes'] },
+            {
+                relations: [
+                    'sub',
+                    'comments',
+                    'votes',
+                    'user',
+                    'comments.votes',
+                ],
+            },
         );
 
         if (!post) {
@@ -70,7 +78,15 @@ const getPost = async (req: Request, res: Response) => {
 
         if (res.locals.user) {
             post.setUserVote(res.locals.user);
+
+            if (post.comments.length > 0) {
+                post.comments.forEach((c) => c.setUserVote(res.locals.user));
+                console.log(post.comments);
+            }
         }
+
+        // @ts-ignore
+        post.comments.sort((a, b) => b.createdAt - a.createdAt);
 
         return res.json(post);
     } catch (error) {

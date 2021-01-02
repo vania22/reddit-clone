@@ -13,7 +13,7 @@ const ActionButton: React.FC = ({ children }): React.ReactElement => (
     </a>
 );
 
-const Card: React.FC<{ post: IPost; revalidate: any }> = ({
+const PostCard: React.FC<{ post: IPost; revalidate?: any }> = ({
     post,
     revalidate,
 }): React.ReactElement => {
@@ -31,7 +31,7 @@ const Card: React.FC<{ post: IPost; revalidate: any }> = ({
     };
 
     return (
-        <div className="flex mb-4 bg-white rounded" key={post.identifier}>
+        <div className="flex mb-4 bg-white rounded">
             {/* Vote section */}
             <div className="flex flex-col justify-center w-10 text-center text-gray-400 bg-gray-200 rounded-l">
                 <i
@@ -108,4 +108,4 @@ const Card: React.FC<{ post: IPost; revalidate: any }> = ({
     );
 };
 
-export default Card;
+export default PostCard;
